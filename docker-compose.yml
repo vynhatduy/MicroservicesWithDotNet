@@ -1,0 +1,111 @@
+version: '3.4'
+networks:
+  backend:
+
+
+services:
+  inventorywebapi:
+    container_name: Api.Inventory
+    image: ${DOCKER_REGISTRY-}inventorywebapi
+    build:
+      context: .
+      dockerfile: InventoryWebApi/Dockerfile
+    depends_on:
+        - db.inventory
+    networks:
+        - backend
+  
+  db.inventory:
+     container_name: db.Inventory
+     image: mcr.microsoft.com/mssql/server:2022-latest
+     ports:
+        - 10001:1433
+     environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Pass@word
+     networks:
+        - backend
+
+
+  orderwebapi:
+    container_name: Api.Order
+    image: ${DOCKER_REGISTRY-}orderwebapi
+    build:
+      context: .
+      dockerfile: OrderWebApi/Dockerfile
+    depends_on:
+        - db.order
+    networks:
+        - backend
+
+
+  db.order:
+     container_name: db.Order
+     image: mcr.microsoft.com/mssql/server:2022-latest
+     ports:
+        - 11001:1433
+     environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Pass@word
+     networks:
+        - backend
+
+
+
+  productwebapi:
+    container_name: Api.Product
+    image: ${DOCKER_REGISTRY-}productwebapi
+    build:
+      context: .
+      dockerfile: ProductWebApi/Dockerfile
+    depends_on:
+        - db.product
+    networks:
+        - backend
+
+  db.product:
+    container_name: :db.Product
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - 12001:1433
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Pass@word
+    networks:
+        - backend
+
+
+
+  userwebapi:
+    container_name: Api.User
+    image: ${DOCKER_REGISTRY-}userwebapi
+    build:
+      context: .
+      dockerfile: UserWebApi/Dockerfile
+    depends_on:
+        - db.user
+    networks:
+        - backend
+        
+  db.user:
+    container_name: :db.User
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - 13001:1433
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Pass@word
+    networks:
+        - backend
+
+
+
+  apigateway:
+    container_name: ApiGateway
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    networks:
+        - backend
+

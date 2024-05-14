@@ -1,0 +1,5 @@
+# Bỏ qua thư mục bin
+bin/
+
+# Bỏ qua thư mục node_modules
+node_modules/
